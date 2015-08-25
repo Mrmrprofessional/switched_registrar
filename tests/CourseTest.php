@@ -6,7 +6,7 @@
     */
 
     require_once "src/Course.php";
-    // require_once "src/Student.php";
+    require_once "src/Student.php";
 
     $server = 'mysql:host=localhost;dbname=registrar';
     $username = 'root';
@@ -17,7 +17,7 @@
     {
         protected function tearDown()
         {
-        //    Student::deleteAll();
+            Student::deleteAll();
             Course::deleteAll();
         }
 
@@ -77,20 +77,151 @@
 
         function testSave()
         {
-          //Arrange
-          $course_id = 1;
-          $course_name = "History";
-          $course_number = "101";
-          $test_course = new Course($course_name, $course_number, $course_id);
+            //Arrange
+            $course_id = 1;
+            $course_name = "History";
+            $course_number = "101";
+            $test_course = new Course($course_name, $course_number, $course_id);
 
-          //Act
-          $test_course->save();
+            //Act
+            $test_course->save();
 
-          //Assert
-          $result = Course::getAll();
-          var_dump($result[0]);
-          $this->assertEquals($test_course, $result[0]);
+            //Assert
+            $result = Course::getAll();
+            $this->assertEquals($test_course, $result[0]);
         }
+
+        function testFind()
+        {
+            //arrange
+            $course_name = "Chemistry";
+            $course_id = 1;
+            $course_number = "1000";
+            $test_course = new Course($course_name, $course_number, $course_id);
+            $test_course->save();
+
+            $course_name2 = "Underwater Basketweaving";
+            $course_id2 = 2;
+            $course_number2 = "2531";
+            $test_course2 = new Course($course_name2, $course_number2, $course_id2);
+            $test_course2->save();
+
+            //act
+            $result = Course::find($test_course->getCourseId());
+
+            //assert
+            $this->assertEquals($test_course, $result);
+        }
+
+        function testUpdateCourseName()
+        {
+            //Arrange
+            $course_name = "Chemistry";
+            $course_id = 1;
+            $course_number = "1000";
+            $test_course = new Course($course_name, $course_number, $course_id);
+            $test_course->save();
+
+            $new_course_name = "Fun with Chemistry - How to Make Bacon Bits";
+
+            //Act
+            $test_course->updateCourseName($new_course_name);
+
+            //Assert
+            $this->assertEquals("Fun with Chemistry - How to Make Bacon Bits", $test_course->getCourseName());
+        }
+
+        function testUpdateCourseNumber()
+        {
+            //Arrange
+            $course_name = "Chemistry";
+            $course_id = 1;
+            $course_number = "1000";
+            $test_course = new Course($course_name, $course_number, $course_id);
+            $test_course->save();
+
+            $new_course_number = "1001";
+
+            //Act
+            $test_course->updateCourseNumber($new_course_number);
+
+            //Assert
+            $this->assertEquals("1001", $test_course->getCourseNumber());
+        }
+
+        function testDeleteCourse()
+        {
+            //Arrange
+            $course_name = "Chemistry";
+            $course_id = 1;
+            $course_number = "1000";
+            $test_course = new Course($course_name, $course_number, $course_id);
+            $test_course->save();
+
+            $course_name2 = "Underwater Basketweaving";
+            $course_id2 = 2;
+            $course_number2 = "2531";
+            $test_course2 = new Course($course_name2, $course_number2, $course_id2);
+            $test_course2->save();
+
+            //Act
+            $test_course->deleteCourse();
+
+            //Assert
+            $this->assertEquals([$test_course2], Course::getAll());
+        }
+
+        function testAddStudent()
+        {
+            //arrange
+            $student_name = "Ben Baker Billington";
+            $date_enrolled = "2015-10-10";
+            $student_id = 1;
+            $test_student = new Student($student_name, $date_enrolled, $student_id);
+            $test_student->save();
+
+            $course_name = "Jammin it, dude";
+            $course_number = "102";
+            $course_id = 2;
+            $test_course = new Course($course_name, $course_nume, $course_id);
+            $test_course->save();
+
+            //Act
+            $test_course->addStudent($test_student);
+
+            //Assert
+            $this->assertEquals($test_course->getStudents(), [$test_student]);
+        }
+
+        function testGetCategories()
+        {
+            //Arrange
+            $date_enrolled = "2015-10-10";
+
+            $student_name = "Ben Baker Billington";
+            $student_id = 1;
+            $test_student = new Student($student_name, $date_enrolled, $student_id);
+            $test_student->save();
+
+            $student_name2 = "Billy Joe Jim Bob";
+            $student_id2 = 2;
+            $test_student2 = new Student($student_name2, $date_enrolled, $student_id2);
+            $test_student2->save();
+
+            $course_name = "Jammin it, dude";
+            $course_number = "102";
+            $course_id = 3;
+            $test_course = new Course($course_name, $course_number, $course_id);
+            $test_course->save();
+
+            //Act
+            $test_course->addStudent($test_student);
+            $test_course->addStudent($test_student2);
+
+            //Assert
+            $this->assertEquals($test_course->getStudents(), [$test_student, $test_student2]);
+        }
+
 
     }
 

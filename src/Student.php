@@ -22,6 +22,16 @@
             return $this->student_name;
         }
 
+        function setEnrolledDate($new_date_enrolled)
+        {
+            $this->new_date_enrolled = $new_date_enrolled;
+        }
+
+        function getEnrolledDate()
+        {
+            return $this->date_enrolled;
+        }
+
         function setStudentNumber($new_date_enrolled)
         {
             $this->date_enrolled = (string) $new_date_enrolled;
@@ -32,11 +42,17 @@
             return $this->date_enrolled;
         }
 
-        function getStudentId()
+        function delete()
         {
-            return $this->student_id;
+            $GLOBALS['DB']->exec("DELETE FROM students WHERE student_id = {$this->getStudentId()};");
+            $GLOBALS['DB']->exec("DELETE FROM students_courses WHERE student_id = {$this->getStudentId()};");
         }
 
+        function save()
+        {
+            $GLOBALS['DB']->exec("INSERT INTO students (student_name, date_enrolled) VALUES ('{$this->getStudentName()}','{$this->getEnrolledDate()}');");
+            $this->student_id = $GLOBALS['DB']->lastInsertId();
+        }
 
     }
 
