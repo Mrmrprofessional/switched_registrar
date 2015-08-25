@@ -25,12 +25,12 @@
         {
             //Arrange
             $course_name = "History";
-            $course_number = "101";
-            $course_id = 1;
-            $test_course = new Course($course_name, $course_number, $course_id);
+            $date_enrolled = "101";
+            $id = 1;
+            $test_course = new Course($course_name, $date_enrolled, $id);
 
             //Act
-            $result = $test_course->getCourseName();
+            $result = $test_course->getcourseName();
 
             //Assert
             $this->assertEquals($course_name, $result);
@@ -183,17 +183,19 @@
             $course_name = "Jammin it, dude";
             $course_number = "102";
             $course_id = 2;
-            $test_course = new Course($course_name, $course_nume, $course_id);
+            $test_course = new Course($course_name, $course_number, $course_id);
             $test_course->save();
 
             //Act
             $test_course->addStudent($test_student);
 
             //Assert
-            $this->assertEquals($test_course->getStudents(), [$test_student]);
+            $var = array();
+            $var = $test_course->getStudents();
+            $this->assertEquals($var, [$test_student]);
         }
 
-        function testGetCategories()
+        function testGetStudents()
         {
             //Arrange
             $date_enrolled = "2015-10-10";

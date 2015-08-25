@@ -102,10 +102,20 @@
 
         function getStudents()
         {
+            $students = array();
             $query = $GLOBALS['DB']->query("SELECT students.* FROM
             courses JOIN students_courses ON(courses.course_id = students_courses.course_id)
             JOIN students ON(students_courses.student_id = students.student_id)
-            WHERE courses.course_id = {$this->getCourseId()}");
+            WHERE courses.course_id = {$this->getCourseId()};");
+
+            foreach($query as $student) {
+                $student_name = $student['student_name'];
+                $date_enrolled = $student['date_enrolled'];
+                $id = $student['student_id'];
+                $new_student = new Student($student_name, $date_enrolled, $id);
+                array_push($students, $new_student);
+            }
+            return $students;
         }
 
 
