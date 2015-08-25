@@ -3,7 +3,7 @@
     {
         private $course_name;
         private $course_number;
-        private $course_id; 
+        private $course_id;
 
         function __construct($course_name, $course_number, $course_id=null)
         {
@@ -37,5 +37,33 @@
             return $this->course_id;
         }
 
+        function save()
+        {
+            $GLOBALS['DB']->exec("INSERT INTO courses (course_name, course_number)
+                VALUES ('{$this->getCourseName()}', '{$this->getCourseNumber()}');");
+            $this->course_id = $GLOBALS['DB']->lastInsertId();
+        }
 
+        static function deleteAll()
+        {
+          $GLOBALS['DB']->exec("DELETE FROM courses;");
+        }
+
+        static function getAll()
+        {
+            $returned_courses = $GLOBALS['DB']->query("SELECT * FROM courses;");
+            $courses = array();
+            foreach($returned_courses as $course) {
+                $course_name = $course['course_name'];
+                $course_id = $course['course_id'];
+                $course_number = $course['course_number'];
+                $new_course = new Course($course_name, $course_number, $course_id);
+                array_push($courses, $new_course);
+            }
+            return $courses;
+        }
+
+
+
+    }
 ?>
